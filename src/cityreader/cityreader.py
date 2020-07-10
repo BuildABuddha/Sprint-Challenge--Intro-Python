@@ -14,14 +14,38 @@
 #
 # Note that the first line of the CSV is header that describes the fields--this
 # should not be loaded into a City object.
+
+import csv
+
+
+class City(object):
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+
+  def __repr__(self):
+    return f"{self.name}: ({self.lat},{self.lon})"
+
+
 cities = []
 
 def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
-    return cities
+
+  with open("src/cityreader/cities.csv", 'r') as csvfile:
+    citydata = csv.reader(csvfile)
+    next(citydata)  # Skip header!
+    for row in citydata:
+      cities.append(City(
+        row[0],   # City name
+        float(row[3]),   # City lat
+        float(row[4])    # City lon
+      ))
+
+  return cities
 
 cityreader(cities)
 
@@ -67,5 +91,11 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
+  lats = [lat1, lat2]
+  lons = [lon1, lon2]
+
+  for city in cities:
+    if city.lat > min(lats) and city.lat < max(lats) and city.lon > min(lons) and city.lon < max(lons):
+      within.append(city)
 
   return within
